@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Accordion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+<div id="accordion" class="bg-[#F9FAFB] flex justify-center">
+    <div x-data="accordion()" class="p-3 w-8/12">
+        <template x-for="accordion in data" :key="accordion.id">
+                <div class="accordion rounded-lg bg-white shadow mt-4" x-transition>
+                <button
+                        @click="style === 'collapse' ? (accordion.isOpen = !accordion.isOpen) : data = data.map(i => ({ ...i, isOpen: i.id !== accordion.id ? false : !i.isOpen}))"
+                        class="flex w-full items-center justify-between px-6 py-4 text-xl font-bold"
+                >
+                    <h3 x-text="accordion.heading" class="font-bold"></h3>
+                    <span class="ml-4" x-show="accordion.isOpen" x-html="iconActive"></span>
+                    <span class="ml-4" x-show="!accordion.isOpen" x-html="icon"></span>
+                </button>
+                <div x-text="accordion.content" x-show="accordion.isOpen" x-collapse class="px-6 pb-4"
+                     x-transition:enter="transform transition ease-in-out duration-500"
+                     x-transition:enter-start="-translate-y-1"
+                ></div>
+            </div>
+        </template>
+    </div>
+</div>
+<script>
+    function accordion() {
+        return {
+            style: 'accordion', //accordion or collapse
+            icon: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6" />
+                        </svg>`,
+            iconActive: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M18 12H6" />
+                        </svg>`,
+            data: [
+                {
+                    id: '1',
+                    heading: 'What is Alpine.js?',
+                    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis pharetra dui, ac feugiat metus. Vivamus id pellentesque urna, quis hendrerit tortor. Sed pharetra sapien a metus fringilla varius.',
+                    isOpen: false,
+                },
+                {
+                    id: '2',
+                    heading: 'Is Alpine.js better than jQuery?',
+                    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis pharetra dui, ac feugiat metus. Vivamus id pellentesque urna, quis hendrerit tortor. Sed pharetra sapien a metus fringilla varius.',
+                    isOpen: false,
+                },
+                {
+                    id: '3',
+                    heading: 'Who created Alpine.js?',
+                    content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis pharetra dui, ac feugiat metus. Vivamus id pellentesque urna, quis hendrerit tortor. Sed pharetra sapien a metus fringilla varius.',
+                    isOpen: false,
+                },
+            ],
+        }
+    }
+</script>
+</body>
+</html>

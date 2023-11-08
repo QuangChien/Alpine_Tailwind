@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Progress Bar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+<h1 class="mt-6 mb-3 text-3xl text-center font-extrabold tracking-tight text-slate-900">Progress Bar Element</h1>
+<div id="progress-bar" class="flex justify-center mt-5" x-data="progressBar">
+    <div class="w-8/12">
+        <template x-for="(item, index) in progressList" :key="item.id">
+            <div x-init="$nextTick(() => {return startProgress(item)})">
+                <template x-if="textPosition === 'above'">
+                    <div class="mb-1 text-md"
+                         x-text="`${item.name} ${item.percent}${units}`"
+                         :class="{ 'mt-8' : index  !== 0, [item.color ?? '']: true, 'text-center': textAlign === 'center', 'text-right': textAlign === 'right'}"
+                    ></div>
+                </template>
+                <div class="relative h-10 overflow-hidden" :class="{ 'mb-10': textPosition === 'inside', [borderRadius]: true}">
+                    <div class="w-full h-full bg-gray-200 absolute">
+                    </div>
+                    <div :id="item.id" class="h-full relative w-0 flex justify-left"
+                         :class="{[item.backgroundClass]: true, 'justify-end': textAlign === 'right', 'justify-center': textAlign === 'center'}"
+                    >
+                        <template x-if="textPosition === 'inside'">
+                            <div class="text-md absolute z-10 h-full flex items-center"
+                                 x-text="`${item.name} ${item.percent}${units}`"
+                                 :class="{[item.color ?? '']: true, 'ml-6': textAlign === 'left', 'mr-6': textAlign === 'right'}"
+                                 x-show="textInsideShow" x-transition.duration.1000ms
+                            ></div>
+                        </template>
+                    </div>
+                </div>
+                <template x-if="textPosition === 'below'">
+                    <div class="mt-1 text-md mb-8"
+                         x-text="`${item.name} ${item.percent}${units}`"
+                         :class="{ 'mb-8' : index  !== progressList.length-1, [item.color ?? '']: true, 'text-center': textAlign === 'center', 'text-right': textAlign === 'right' }"
+                    ></div>
+                </template>
+            </div>
+        </template>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('alpine:init', () => {
+        Alpine.data('progressBar', () => ({
+            textInsideShow: false,
+            textAlign: 'center', // left || right || center
+            progress: 0,
+            intervalSpeed: 8,
+            incrementSpeed: 1,
+            textPosition: 'inside', //above || below || inside
+            units: '%', // % || anything
+            borderRadius: '',
+            progressList: [
+                {
+                    id: "red",
+                    name: "Red",
+                    percent: 60,
+                    backgroundClass: 'bg-[#ff3333]', //background color
+                    color: 'text-[#fff]' //text color
+                },
+                {
+                    id: "blue",
+                    name: "Blue",
+                    percent: 84,
+                    backgroundClass: 'bg-blue-500',
+                    color: 'text-[#f2ff00]'
+                },
+                {
+                    id: "green",
+                    name: "Green",
+                    percent: 90,
+                    backgroundClass: 'bg-green-500',
+                    color: 'text-[#000]'
+                },
+
+                {
+                    id: "orange",
+                    name: "Orange",
+                    percent: 96,
+                    backgroundClass: 'bg-orange-500',
+                    color: 'text-[#fff]'
+                },
+            ],
+
+            //animate
+            startProgress: function (item) {
+                let intervalSpeed = this.intervalSpeed;
+                let incrementSpeed = this.incrementSpeed;
+                let progress = this.progress;
+
+                let element = document.getElementById(item.id);
+                let progressInterval = setInterval(function () {
+                    progress += incrementSpeed;
+                    element.style.width = progress + "%";
+                    if (progress >= item.percent) {
+                        clearInterval(progressInterval);
+                    }
+                }, intervalSpeed);
+                this.textInsideShow = true;
+            }
+        }))
+    })
+
+</script>
+
+</body>
+</html>
